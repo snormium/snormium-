@@ -1,0 +1,13 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Security guide</h1>
+<p><strong>Security Center</strong> (Applications ▸ System) answers one question: <em>is my computer protected?</em>
+* <strong>Green</strong> — nothing to do. <strong>Yellow</strong> — something is recommended (a <em>Fix</em> button is shown). <strong>Red</strong> — act now.
+* <strong>Firewall</strong> (firewalld) blocks incoming connections; games connect <em>out</em> and work normally. Steam Remote Play and KDE Connect have
+  switches under <em>Advanced</em>.
+* <strong>Automatic updates</strong> download the next system image and app updates in the background. The computer <strong>never restarts by itself</strong>;
+  the new image simply takes effect at your next restart, and the previous one is kept in case you need it.
+* <strong>Application protection</strong> is SELinux (enforcing) plus Flatpak sandboxing for every app you install.
+* <a id="secure-boot"></a><strong>Secure Boot</strong>: on by default. First boot may ask you to enrol the Universal Blue key (password <code>universalblue</code>) — once.
+* <a id="encryption"></a><strong>Disk encryption</strong> is chosen at install time (<em>Encrypt my data</em>). External drives: Disks / Partition Manager.
+* <strong>USB device guard</strong> (Advanced) blocks unknown USB devices until you unlock. Off by default because it can block a new keyboard.
+* The system image itself is read-only and cryptographically signed; malware cannot persist in it.
+Passwords are asked only when a setting actually changes, never for browsing or playing.</p>

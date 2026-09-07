@@ -1,0 +1,8 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Package management</h1>
+<p>Snormium is image-based: the system is one signed image that updates atomically; apps come from <strong>Flathub</strong> via <strong>Discover</strong>.
+* Discover installs Flatpak apps and shows firmware and system-image updates in one place.
+* Need a command-line tool or something not on Flathub? <code>brew install &lt;tool&gt;</code> (Homebrew is built in) or a Distrobox container
+  (<code>ujust distrobox</code>) — neither touches the system image.
+* Layering RPMs onto the image (<code>rpm-ostree install</code>) works but slows updates; prefer the options above.
+* No PPAs, no curl-pipe installers. Emulators that exist only as AppImages are fetched with pinned checksums
+  (<code>snormium-app-fetch</code>), never blindly.</p>

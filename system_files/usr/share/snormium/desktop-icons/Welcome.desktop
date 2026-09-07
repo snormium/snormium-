@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Welcome to Snormium
+Comment=Set-up, guides and everything in one place
+Exec=snormium-welcome
+Icon=snormium-logo
+Terminal=false
+Categories=Snormium;

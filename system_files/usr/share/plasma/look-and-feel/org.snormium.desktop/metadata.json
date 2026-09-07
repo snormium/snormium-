@@ -1,0 +1,18 @@
+{
+  "KPackageStructure": "Plasma/LookAndFeel",
+  "KPlugin": {
+    "Id": "org.snormium.desktop",
+    "Name": "Snormium",
+    "Description": "Snormium default desktop: void surfaces, violet accent, floating panel",
+    "Authors": [
+      {
+        "Name": "Snormium"
+      }
+    ],
+    "License": "GPL-3.0-or-later",
+    "Version": "2.0"
+  },
+  "X-Plasma-MainScript": "defaults",
+  "X-Plasma-APIVersion": "2",
+  "Keywords": "snormium,dark,violet"
+}

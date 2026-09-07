@@ -1,0 +1,9 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Recovery guide — "Something went wrong"</h1>
+<p>Every update keeps the previous system image. That is the whole recovery story: nothing is ever overwritten in place.
+<strong>Misbehaves after an update</strong> → Recovery Center ▸ <em>Undo the last update</em> ▸ restart. Or at the boot menu, pick the older entry.
+<strong>Want a permanent restore point</strong> → Recovery Center ▸ <em>Pin current image</em>.
+<strong>"Update failed"</strong> → Recovery Center ▸ <em>Repair updates</em>. Your files are untouched.
+<strong>Nothing boots</strong> → boot the install USB, choose <em>Rescue</em>; or reinstall — the installer can keep <code>/home</code> if you chose a separate
+partition. Files backed up with Backups (Pika) restore from any external drive.
+<strong>Forgot password</strong> → boot menu ▸ press <code>e</code> on the entry ▸ add <code>rd.break</code> ▸ Ctrl+X ▸ <code>chroot /sysroot; passwd &lt;user&gt;</code>. (Encrypted
+disks need the disk passphrase first.)</p>

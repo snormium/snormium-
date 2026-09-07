@@ -1,0 +1,72 @@
+{
+  "logo": {
+    "source": "/usr/share/snormium/logo.txt",
+    "type": "file",
+    "color": {
+      "1": "magenta",
+      "2": "cyan"
+    },
+    "padding": {
+      "right": 2
+    }
+  },
+  "display": {
+    "separator": "  ",
+    "color": {
+      "keys": "magenta"
+    }
+  },
+  "modules": [
+    {
+      "type": "title",
+      "color": {
+        "user": "magenta",
+        "host": "cyan"
+      }
+    },
+    "separator",
+    {
+      "type": "os",
+      "key": "  os"
+    },
+    {
+      "type": "kernel",
+      "key": "  kernel"
+    },
+    {
+      "type": "packages",
+      "key": "  pkgs"
+    },
+    {
+      "type": "de",
+      "key": "  desktop"
+    },
+    {
+      "type": "wm",
+      "key": "  wm"
+    },
+    {
+      "type": "terminal",
+      "key": "  term"
+    },
+    "break",
+    {
+      "type": "cpu",
+      "key": "  cpu"
+    },
+    {
+      "type": "gpu",
+      "key": "  gpu"
+    },
+    {
+      "type": "memory",
+      "key": "  memory"
+    },
+    {
+      "type": "disk",
+      "key": "  disk"
+    },
+    "break",
+    "colors"
+  ]
+}

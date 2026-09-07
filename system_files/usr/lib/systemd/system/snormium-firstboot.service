@@ -1,0 +1,9 @@
+[Unit]
+Description=Snormium first-boot configuration
+After=network-online.target
+ConditionPathExists=!/var/lib/snormium/firstboot.done
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/snormium/snormium-firstboot
+[Install]
+WantedBy=multi-user.target

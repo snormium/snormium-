@@ -1,0 +1,41 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Snormium security architecture (NIST CSF-aligned, not certified)</h1>
+<p>Goal: Windows-Defender-class <em>consumer</em> protection on Linux Mint, invisible until it matters, without breaking
+Steam/Proton/Wine/emulators/audio hardware. Formal NIST certification has <strong>not</strong> been performed.</p>
+<table>
+<thead>
+<tr>
+<th>CSF function</th>
+<th>Snormium implementation</th>
+<th>Windows analogue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Identify</strong></td>
+<td>Security Center inventories firewall, updates, AppArmor, Secure Boot, encryption, firmware, snapshots, failed services, disk space; Driver Manager identifies GPU/driver; <code>fwupd</code> identifies firmware</td>
+<td>Security dashboard, Device Manager</td>
+</tr>
+<tr>
+<td><strong>Protect</strong></td>
+<td>UFW default-deny inbound (opt-in app profiles); AppArmor enforce for browsers/mail/office, Steam etc. deliberately <code>unconfined</code> (Ubuntu policy); Flatpak/bubblewrap sandbox for emulators &amp; launchers; polkit <code>auth_admin_keep</code> for every Snormium privileged action (UAC-like, prompts only on change); LUKS in installer; signed shim/GRUB/kernel (Secure Boot); <code>sysctl</code> hardening (ptrace scope, kptr, protected_* , redirects); automatic screen lock; pwquality; optional USBGuard</td>
+<td>Firewall, UAC, SmartScreen (partial: Flatpak sandbox), BitLocker, Secure Boot, Protected system files</td>
+</tr>
+<tr>
+<td><strong>Detect</strong></td>
+<td>unattended-upgrades logs; <code>needrestart</code> reboot-required; <code>systemctl --failed</code> surfaced in Security Center; fwupd; (no AV: Linux desktop malware risk is addressed by signed repos + sandboxing, ClamAV optional via Software Center)</td>
+<td>Defender scans, Reliability Monitor</td>
+</tr>
+<tr>
+<td><strong>Respond</strong></td>
+<td>Security Center "Fix" buttons; Recovery Center "Repair updates"; friendly error messages with Advanced details</td>
+<td>Troubleshooters</td>
+</tr>
+<tr>
+<td><strong>Recover</strong></td>
+<td>Timeshift weekly restore points + initial snapshot on first boot; GRUB previous-kernel one-shot; Mint Backup for files; live ISO rescue</td>
+<td>System Restore, Safe Mode, File History</td>
+</tr>
+</tbody>
+</table>
+<p>Compatibility policy: a security control that breaks any item in <code>packages/gaming.list</code>, <code>flatpak.list</code>
+or a USB-class audio device is a bug in the control, not in the app.</p>

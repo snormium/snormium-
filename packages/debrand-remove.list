@@ -1,0 +1,3 @@
+# INTENTIONALLY EMPTY. Snormium removes NO RPMs from Bazzite: steamdeck-kde-presets-desktop also owns functional files
+# (steamos-add-to-steam, xdg configs), so its Valve artwork is scrubbed file-by-file in 50-debrand.sh instead.
+# 55-verify-bazzite-stack.sh fails the build if any package present in the base is missing from the result.

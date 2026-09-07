@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=melonDS
+Comment=Nintendo DS
+Exec=flatpak run net.kuribo64.melonDS
+Icon=net.kuribo64.melonDS
+Terminal=false
+Categories=Snormium;

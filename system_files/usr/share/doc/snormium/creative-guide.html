@@ -1,0 +1,13 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Creative Studio</h1>
+<p>Installed on first boot (Flathub, sandboxed, auto-updating):
+| Area | Apps |
+|---|---|
+| Photo &amp; image | GIMP (raster editing), Krita (painting/illustration), Inkscape (vector/SVG), Darktable and RawTherapee (RAW workflow), Upscayl (AI upscaling) |
+| Video | Kdenlive (editing), OBS Studio with game-capture and VA-API encode plugins (recording/streaming) |
+| 3D | Blender |
+| Audio | Ardour (DAW), Audacity (editing); PipeWire "Studio audio mode" in Welcome for low-latency interfaces |
+| Command line | ImageMagick (<code>magick</code>), ffmpeg — native, full codecs |</p>
+<p><strong>DaVinci Resolve</strong> (free and Studio) is not redistributable, so it is not bundled. Download the Linux <code>.run</code> installer from
+blackmagicdesign.com to <code>~/Downloads</code>, then Welcome ▸ <em>DaVinci Resolve</em> (or <code>ujust install-resolve</code>). It runs in a Distrobox
+container with the libraries Resolve expects; the launcher appears in the menu when done. GPU: works on NVIDIA (CUDA) and AMD
+(ROCm/OpenCL) cards; Intel iGPUs are not supported by Resolve on Linux.</p>

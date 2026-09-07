@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<string name="ROMDirectory" value="@ROOT@/roms" />
+<string name="MediaDirectory" value="@ROOT@/media" />
+<bool name="ShowHiddenFiles" value="false" />
+<string name="ThemeName" value="linear-es-de" />

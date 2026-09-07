@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=PCSX2
+Comment=PlayStation 2
+Exec=flatpak run net.pcsx2.PCSX2
+Icon=net.pcsx2.PCSX2
+Terminal=false
+Categories=Snormium;

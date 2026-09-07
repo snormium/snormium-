@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Firefox
+Comment=Web browser
+Exec=flatpak run org.mozilla.firefox
+Icon=org.mozilla.firefox
+Terminal=false
+Categories=Snormium;

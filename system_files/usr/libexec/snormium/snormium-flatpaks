@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Installs Snormium's "core" Flatpak tier (system scope) after the network is up. Runs on every boot until every app
+# is present, then stamps /var/lib/snormium/flatpaks.done. Safe on metered/offline: it retries next boot, never fails
+# the boot, and never blocks the desktop session (it is a plain oneshot, not a session dependency).
+set -Eeuo pipefail
+STAMP=/var/lib/snormium/flatpaks.done; [[ -e $STAMP ]] && exit 0
+LIST=/usr/share/snormium/flatpak.list; mkdir -p /var/lib/snormium
+mapfile -t want < <(awk '!/^#/ && $1=="core"{print $2}' "$LIST")
+flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo >/dev/null 2>&1 || true
+# wait up to ~2 min for flathub to be reachable (first boot may race the network)
+for _ in $(seq 1 24); do curl -fsS -m 5 -o /dev/null https://dl.flathub.org/repo/config && break; sleep 5; done
+missing=()
+for app in "${want[@]}"; do flatpak info --system "$app" >/dev/null 2>&1 || missing+=("$app"); done
+if [[ ${#missing[@]} -eq 0 ]]; then touch "$STAMP"; exit 0; fi
+echo "snormium-flatpaks: installing ${#missing[@]} app(s): ${missing[*]}"
+# one app per call so a single failure (rate limit, temporary 5xx) does not abort the rest
+for app in "${missing[@]}"; do
+  if out=$(flatpak install --system -y --noninteractive --or-update flathub "$app" 2>&1); then echo "  ok  $app"; else echo "  retry-next-boot  $app: $(tail -n1 <<<"$out")"; fi
+done
+# Codecs for Flatpak apps: the ffmpeg-full extension is only pulled on demand upstream. Install it (and the
+# OBS/MangoHud Vulkan layers) for every freedesktop runtime branch now present, so Firefox/VLC/OBS/Kdenlive play
+# and encode H.264/HEVC/AAC out of the box. Native apps already have full codecs from Bazzite (RPM Fusion + Terra).
+while read -r _ branch; do
+  [[ -n $branch ]] || continue
+  for ext in org.freedesktop.Platform.ffmpeg-full org.freedesktop.Platform.VulkanLayer.OBSVkCapture org.freedesktop.Platform.VulkanLayer.MangoHud; do
+    flatpak install --system -y --noninteractive --or-update flathub "${ext}//${branch}" >/dev/null 2>&1 && echo "  ok  ${ext}//${branch}" || echo "  skip ${ext}//${branch}"
+  done
+done < <(flatpak list --system --runtime --columns=application,branch 2>/dev/null | awk '$1=="org.freedesktop.Platform"{print $1, $2}' | sort -u)
+still=0; for app in "${want[@]}"; do flatpak info --system "$app" >/dev/null 2>&1 || still=1; done
+[[ $still -eq 0 ]] && { touch "$STAMP"; echo "snormium-flatpaks: complete"; } || echo "snormium-flatpaks: some apps still missing; will retry on next boot"
+exit 0

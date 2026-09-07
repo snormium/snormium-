@@ -1,0 +1,14 @@
+# One default libretro core per system (mature, actively maintained). Install via RetroArch > Online Updater.
+stella_libretro.so
+prosystem_libretro.so
+handy_libretro.so
+mesen_libretro.so
+snes9x_libretro.so
+gambatte_libretro.so
+mgba_libretro.so
+mupen64plus_next_libretro.so
+genesis_plus_gx_libretro.so
+picodrive_libretro.so
+mednafen_saturn_libretro.so
+mednafen_pce_libretro.so
+fbneo_libretro.so

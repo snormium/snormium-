@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Creates the user's emulation folder layout, installs RetroArch defaults + one core per system (via
+# libretro buildbot, with per-file SHA256 verified against retroarch's own .index-extended? No — the
+# buildbot publishes no hashes, so cores are installed through RetroArch's OWN updater, which is what
+# upstream supports. We only pre-write the config and the core list; RetroArch downloads on first run.)
+set -Eeuo pipefail
+ROOT="$HOME/Games/Emulation"; mkdir -p "$ROOT"/{roms,bios,saves,states,screenshots}
+while read -r sys _; do [[ -n $sys ]] && mkdir -p "$ROOT/roms/$sys"; done < /usr/share/snormium/emulation/systems.tsv
+RA="$HOME/.var/app/org.libretro.RetroArch/config/retroarch"; mkdir -p "$RA/cores" "$RA/config"
+[[ -e "$RA/retroarch.cfg" ]] || cp /usr/share/snormium/emulation/retroarch.cfg "$RA/retroarch.cfg"
+sed -i "s|@HOME@|$HOME|g" "$RA/retroarch.cfg"
+cp /usr/share/snormium/emulation/snormium-cores.txt "$RA/snormium-cores.txt"
+# ES-DE (AppImage) if pinned, plus its systems config pointing at our folder layout
+if snormium-app-fetch install es-de; then
+  mkdir -p "$HOME/ES-DE/custom_systems"; cp /usr/share/snormium/emulation/es_settings.xml "$HOME/ES-DE/es_settings.xml" 2>/dev/null || true
+  sed -i "s|@ROOT@|$ROOT|g" "$HOME/ES-DE/es_settings.xml"
+fi
+cp /usr/share/doc/snormium/emulation-guide.html "$ROOT/README-where-files-go.html"
+echo "Emulation folders ready at $ROOT. Open RetroArch once: Main Menu > Online Updater > Core Downloader,"
+echo "and install the cores listed in $RA/snormium-cores.txt (RetroArch verifies them against its own index)."

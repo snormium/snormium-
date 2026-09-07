@@ -1,0 +1,28 @@
+# Snormium Plymouth script theme: night background, logo, thin progress bar, password prompt for LUKS.
+Window.SetBackgroundTopColor(0.070, 0.063, 0.110);
+Window.SetBackgroundBottomColor(0.133, 0.122, 0.208);
+bg.image = Image("background.png");
+if (bg.image) { bg.sprite = Sprite(bg.image.Scale(Window.GetWidth(), Window.GetHeight())); bg.sprite.SetPosition(0, 0, -10); }
+logo.image = Image("logo.png");
+if (!logo.image) logo.image = Image.Text("Snormium", 0.55, 0.36, 0.96);
+logo.sprite = Sprite(logo.image);
+logo.sprite.SetX(Window.GetWidth()/2 - logo.image.GetWidth()/2);
+logo.sprite.SetY(Window.GetHeight()/2 - logo.image.GetHeight()/2 - 40);
+bar.w = Window.GetWidth() * 0.3; bar.h = 4;
+bar.x = Window.GetWidth()/2 - bar.w/2; bar.y = Window.GetHeight()/2 + logo.image.GetHeight()/2 + 20;
+bar.bg = Sprite(Image.Text("", 0,0,0)); 
+fun progress_callback(duration, progress) {
+  img = Image("bar.png").Scale(bar.w * progress, bar.h);
+  bar.fg = Sprite(img); bar.fg.SetPosition(bar.x, bar.y, 1);
+}
+Plymouth.SetBootProgressFunction(progress_callback);
+fun display_password_callback(prompt, bullets) {
+  txt = ""; for (i = 0; i < bullets; i++) txt += "•";
+  prompt.sprite = Sprite(Image.Text("Unlock disk: " + txt, 0.91, 0.93, 0.95));
+  prompt.sprite.SetPosition(Window.GetWidth()/2 - 120, bar.y + 30, 2);
+}
+Plymouth.SetDisplayPasswordFunction(display_password_callback);
+fun display_normal_callback() { if (prompt.sprite) prompt.sprite.SetOpacity(0); }
+Plymouth.SetDisplayNormalFunction(display_normal_callback);
+fun quit_callback() { }
+Plymouth.SetQuitFunction(quit_callback);

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Privileged helper for Recovery Center (pkexec). Fedora Atomic edition.
+set -Eeuo pipefail
+case "${1:-}" in
+  rollback)       rpm-ostree rollback ;;
+  pin)            ostree admin pin 0 ;;
+  repair-updates) rpm-ostree cleanup -p -r 2>/dev/null || true; if command -v uupd >/dev/null; then uupd; else rpm-ostree upgrade; fi ;;
+  *) echo "usage: recovery-helper {rollback|pin|repair-updates}" >&2; exit 2 ;;
+esac

@@ -1,0 +1,18 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Gaming guide</h1>
+<ul>
+<li><strong>Steam</strong> is preinstalled. Steam ▸ Settings ▸ Compatibility ▸ <em>Enable Steam Play for all other titles</em> is on by default
+  in recent Steam clients; if not, tick it. Windows games then run through <strong>Proton</strong> automatically.</li>
+<li><strong>Proton-GE / Wine-GE</strong> (extra codecs, fixes): Welcome ▸ <em>Set up Proton-GE</em>, click Add, pick GE-Proton. In Steam, right-click a
+  game ▸ Properties ▸ Compatibility ▸ choose GE-Proton.</li>
+<li><strong>Epic / GOG / Amazon</strong>: Heroic — sign in, install, play; it manages Proton-GE itself. <strong>Ubisoft Connect, EA App, Battle.net,
+  Rockstar</strong>: Lutris — search the launcher's name inside Lutris and run its install script, then sign in as on Windows.
+  <strong>Anything else</strong>: Bottles. All are installed by default (Flatpak).</li>
+<li><strong>GameMode</strong> is no longer shipped by Bazzite (its priority tweaks are covered by Gamescope and the kernel's scheduler); <code>gamemoderun</code> in launch options can simply be removed.</li>
+<li><strong>MangoHud</strong> overlay: Right Shift + F12 in any Vulkan/OpenGL game. Welcome ▸ <em>Performance overlay</em> makes it default-on.</li>
+<li><strong>Gamescope</strong> is built in: in Steam, add <code>gamescope -W 2560 -H 1440 -r 144 --hdr-enabled -- %command%</code> to a game's launch options,
+  or use Bazzite's <em>Gaming Mode</em> session (<code>ujust enable-gaming-mode</code> on desktops) for a Steam-Deck-style full-screen experience.</li>
+<li><strong>HDR</strong> works on the desktop (Wayland): System Settings ▸ Display ▸ HDR, on a supported monitor.</li>
+<li><strong>VRR / high refresh</strong>: System Settings ▸ Display. Multi-monitor VRR on X11 works with the monitor the game is fullscreen on.</li>
+<li>Anti-cheat: EAC/BattlEye work when the game's publisher enabled Linux support; nothing in Snormium blocks them.</li>
+<li>NVIDIA: use the <code>snormium-nvidia</code> image; nothing to install. AMD/Intel: nothing to install.</li>
+</ul>

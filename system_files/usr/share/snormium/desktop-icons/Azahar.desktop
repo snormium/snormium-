@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Azahar
+Comment=Nintendo 3DS
+Exec=flatpak run org.azahar_emu.Azahar
+Icon=org.azahar_emu.Azahar
+Terminal=false
+Categories=Snormium;

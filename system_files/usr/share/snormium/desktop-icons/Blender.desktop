@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Blender
+Comment=3D modelling and animation
+Exec=flatpak run org.blender.Blender
+Icon=org.blender.Blender
+Terminal=false
+Categories=Snormium;

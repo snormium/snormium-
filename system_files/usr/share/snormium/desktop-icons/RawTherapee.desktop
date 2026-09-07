@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=RawTherapee
+Comment=RAW processing
+Exec=flatpak run com.rawtherapee.RawTherapee
+Icon=com.rawtherapee.RawTherapee
+Terminal=false
+Categories=Snormium;

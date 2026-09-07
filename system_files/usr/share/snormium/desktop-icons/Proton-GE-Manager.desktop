@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Proton-GE Manager
+Comment=Extra compatibility layers (ProtonUp-Qt)
+Exec=flatpak run net.davidotek.pupgui2
+Icon=net.davidotek.pupgui2
+Terminal=false
+Categories=Snormium;

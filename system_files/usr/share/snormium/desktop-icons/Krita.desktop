@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Krita
+Comment=Digital painting
+Exec=flatpak run org.kde.krita
+Icon=org.kde.krita
+Terminal=false
+Categories=Snormium;

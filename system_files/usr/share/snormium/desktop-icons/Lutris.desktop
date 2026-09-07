@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Lutris — Ubisoft, EA, Battle.net
+Comment=Ubisoft Connect, EA App, Battle.net, Rockstar and more
+Exec=flatpak run net.lutris.Lutris
+Icon=net.lutris.Lutris
+Terminal=false
+Categories=Snormium;

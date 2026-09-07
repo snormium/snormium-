@@ -1,0 +1,8 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Driver guide</h1>
+<p>Snormium is an <em>image-based</em> system: drivers are part of the system image, not something you install.
+* <strong>AMD / Intel</strong> — <code>snormium</code> image. Mesa, Vulkan, VA-API video decode: nothing to do.
+* <strong>NVIDIA</strong> — <code>snormium-nvidia</code> image (open kernel modules, RTX 20-series and newer). Already installed; updated with the system.
+  Switch an existing install between images in Recovery Center ▸ Advanced, or <code>sudo bootc switch ghcr.io/snormium/snormium-nvidia</code>.
+* <strong>Firmware</strong> (UEFI, SSDs, docks) — Discover ▸ Updates lists LVFS firmware; Security Center warns if any is pending.
+* <strong>Wi-Fi / Bluetooth / printers</strong> — in the kernel and image. Printers via System Settings ▸ Printers (driverless IPP).
+What's active: System Settings ▸ About this System, or <code>inxi -G</code>.</p>

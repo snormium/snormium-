@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Kdenlive
+Comment=Video editing
+Exec=flatpak run org.kde.kdenlive
+Icon=org.kde.kdenlive
+Terminal=false
+Categories=Snormium;

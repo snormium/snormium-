@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Set up DaVinci Resolve
+Comment=Download Resolve from Blackmagic to Downloads first, then run this
+Exec=konsole --hold -e ujust install-resolve
+Icon=video-x-generic
+Terminal=false
+Categories=Snormium;

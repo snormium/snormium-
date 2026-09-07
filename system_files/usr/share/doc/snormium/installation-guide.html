@@ -1,0 +1,12 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Installation guide</h1>
+<ol>
+<li><strong>Download</strong> the ISO and its <code>.sha256</code>; verify with <code>sha256sum -c</code>.</li>
+<li><strong>Write to USB</strong> (8 GB+): Rufus (DD mode) or balenaEtcher on Windows; Etcher or <code>dd</code> on Linux/macOS.</li>
+<li><strong>Boot</strong> from USB (F12 / F2 / Del / Esc at power-on). Secure Boot can stay <strong>on</strong> — Snormium is signed with the
+   Universal Blue key; if the firmware asks you to enrol a key on first boot, the password is <code>universalblue</code>.</li>
+<li>The installer (Anaconda) asks for language, keyboard, disk, and your user. Tick <strong>Encrypt my data</strong> on the disk screen —
+   that is what turns "Disk encryption" green in Security Center. Dual-boot: choose <em>Custom</em> and keep the other OS's partitions.</li>
+<li>Restart, remove the USB. First boot installs the bundled apps from Flathub (needs internet, a few minutes) and pins the
+   initial system image as a permanent restore point.
+<strong>NVIDIA cards</strong>: download the <code>snormium-nvidia</code> ISO instead. There is no driver to install afterwards — it's part of the image.</li>
+</ol>

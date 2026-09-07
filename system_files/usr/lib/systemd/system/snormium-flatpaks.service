@@ -1,0 +1,13 @@
+[Unit]
+Description=Snormium: install bundled Flatpak apps (first boots only)
+Wants=network-online.target
+After=network-online.target flatpak-system-helper.service
+ConditionPathExists=!/var/lib/snormium/flatpaks.done
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/snormium/snormium-flatpaks
+TimeoutStartSec=4h
+Nice=10
+IOSchedulingClass=idle
+[Install]
+WantedBy=multi-user.target

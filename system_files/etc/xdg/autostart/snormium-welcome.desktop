@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Snormium Welcome Center
+Exec=snormium-welcome --autostart
+Type=Application
+X-KDE-autostart-after=panel
+OnlyShowIn=KDE;

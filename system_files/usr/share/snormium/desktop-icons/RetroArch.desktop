@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=RetroArch
+Comment=Atari to N64, Saturn, arcade and more
+Exec=flatpak run org.libretro.RetroArch
+Icon=org.libretro.RetroArch
+Terminal=false
+Categories=Snormium;

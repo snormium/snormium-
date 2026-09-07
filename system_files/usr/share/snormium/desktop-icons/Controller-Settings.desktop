@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Controllers
+Comment=Test and configure gamepads
+Exec=systemsettings kcm_gamecontroller
+Icon=input-gaming
+Terminal=false
+Categories=Snormium;

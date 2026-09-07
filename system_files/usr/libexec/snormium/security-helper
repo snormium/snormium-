@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Privileged helper (pkexec, org.snormium.security-helper). Fixed, validated actions only. Fedora Atomic edition.
+set -Eeuo pipefail
+cmd="${1:-}"; shift || true
+valid_state() { [[ "${1:-}" =~ ^(on|off)$ ]] || { echo "bad state" >&2; exit 2; }; }
+timer() { for t in uupd.timer ublue-update.timer bootc-fetch-apply-updates.timer; do if systemctl cat "$t" >/dev/null 2>&1; then echo "$t"; return; fi; done; echo uupd.timer; }
+case "$cmd" in
+  status)
+    case "${1:-}" in
+      firewall)   if [[ "$(firewall-cmd --state 2>/dev/null)" == running ]]; then echo on; else echo off; fi ;;
+      autoupdate) if systemctl is-enabled --quiet "$(timer)"; then echo on; else echo off; fi ;;
+      usbguard)   if systemctl is-active --quiet usbguard; then echo on; else echo off; fi ;;
+      "fw-service "*) svc="${1#fw-service }"; if firewall-cmd --query-service="$svc" >/dev/null 2>&1; then echo on; else echo off; fi ;;
+      *) echo off ;;
+    esac ;;
+  firewall)   valid_state "$1"; if [[ $1 == on ]]; then systemctl enable --now firewalld; else systemctl disable --now firewalld; fi ;;
+  autoupdate) valid_state "$1"; if [[ $1 == on ]]; then systemctl enable --now "$(timer)"; else systemctl disable --now "$(timer)"; fi ;;
+  fw-service) svc="$1"; valid_state "$2"; re='^[a-z0-9-]+$'; [[ "$svc" =~ $re ]] || exit 2
+    if [[ $2 == on ]]; then firewall-cmd --permanent --add-service="$svc" >/dev/null; else firewall-cmd --permanent --remove-service="$svc" >/dev/null; fi
+    firewall-cmd --reload >/dev/null ;;
+  usbguard)   valid_state "$1"
+    if [[ $1 == on ]]; then [[ -s /etc/usbguard/rules.conf ]] || usbguard generate-policy > /etc/usbguard/rules.conf; systemctl enable --now usbguard
+    else systemctl disable --now usbguard; fi ;;
+  *) echo "usage: security-helper {status <key>|firewall|autoupdate|fw-service <name>|usbguard} on|off" >&2; exit 2 ;;
+esac

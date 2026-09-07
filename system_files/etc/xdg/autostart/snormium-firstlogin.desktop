@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Snormium first login
+Exec=/usr/libexec/snormium/snormium-firstlogin
+Type=Application
+X-KDE-autostart-phase=1
+OnlyShowIn=KDE;
+NoDisplay=true

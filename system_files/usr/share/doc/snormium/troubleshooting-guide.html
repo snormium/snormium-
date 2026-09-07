@@ -1,0 +1,47 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Troubleshooting</h1>
+<table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Try</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Game won't start under Proton</td>
+<td>Right-click ▸ Properties ▸ Compatibility ▸ GE-Proton; check ProtonDB</td>
+</tr>
+<tr>
+<td>No sound in a game</td>
+<td>Sound settings ▸ output device; in-game audio device; <code>pavucontrol</code> per-app</td>
+</tr>
+<tr>
+<td>USB audio interface has no inputs</td>
+<td>Sound settings ▸ profile <em>Pro Audio</em>; qpwgraph shows all channels</td>
+</tr>
+<tr>
+<td>Controller works in Steam but not emulator</td>
+<td>Disable Steam Input for that game, or run the emulator outside Steam</td>
+</tr>
+<tr>
+<td>Screen tearing</td>
+<td>Display settings ▸ VRR/compositing; for games use Gamescope or fullscreen</td>
+</tr>
+<tr>
+<td>Bluetooth pad won't pair</td>
+<td>Remove old pairing, hold pair button 3 s, try again; update pad firmware</td>
+</tr>
+<tr>
+<td>Security Center shows "Firmware update available"</td>
+<td>Update Manager ▸ Firmware tab</td>
+</tr>
+<tr>
+<td>"Restart needed" every day</td>
+<td>Normal after kernel/system-library updates; restart when convenient</td>
+</tr>
+<tr>
+<td>Logs for advanced users: <code>journalctl -b -p err</code>, <code>/var/log/unattended-upgrades/</code>, Steam: <code>~/.steam/steam/logs</code>.</td>
+<td></td>
+</tr>
+</tbody>
+</table>

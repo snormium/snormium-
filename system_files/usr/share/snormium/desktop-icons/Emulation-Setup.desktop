@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Emulation Setup
+Comment=Create game folders and RetroArch defaults (run once)
+Exec=konsole --hold -e ujust snormium-emulation
+Icon=snormium-emulation
+Terminal=false
+Categories=Snormium;

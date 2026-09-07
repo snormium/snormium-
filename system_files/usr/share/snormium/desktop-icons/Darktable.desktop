@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Darktable
+Comment=RAW photography
+Exec=flatpak run org.darktable.Darktable
+Icon=org.darktable.Darktable
+Terminal=false
+Categories=Snormium;

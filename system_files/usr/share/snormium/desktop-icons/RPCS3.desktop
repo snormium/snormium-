@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=RPCS3
+Comment=PlayStation 3
+Exec=flatpak run net.rpcs3.RPCS3
+Icon=net.rpcs3.RPCS3
+Terminal=false
+Categories=Snormium;

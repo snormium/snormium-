@@ -1,0 +1,16 @@
+# RPMs layered on Bazzite. Keep short: Bazzite already has the gaming stack, PipeWire, firewalld, SELinux, fwupd, Flatpak.
+python3-gobject           # Snormium GTK centers
+gtk3
+python3-pillow            # build-time wallpaper generation (also used by firstboot for custom art)
+librsvg2-tools            # rsvg-convert at build time
+python3-psutil
+plymouth-plugin-script    # Snormium Plymouth theme
+papirus-icon-theme
+usbguard                  # installed, disabled; Advanced toggle
+orca                      # screen reader (KDE a11y)
+mokutil
+qpwgraph                  # PipeWire patchbay
+plasma-firewall           # kcm_firewall for the Security Center "Firewall settings" button
+rsms-inter-fonts          # UI font (Inter)
+jetbrains-mono-fonts      # monospace (terminal/code)
+ImageMagick               # batch image processing (CLI: magick/convert)

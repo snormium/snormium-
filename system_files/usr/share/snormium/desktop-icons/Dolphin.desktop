@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Dolphin
+Comment=GameCube and Wii
+Exec=flatpak run org.DolphinEmu.dolphin-emu
+Icon=org.DolphinEmu.dolphin-emu
+Terminal=false
+Categories=Snormium;

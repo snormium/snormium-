@@ -1,0 +1,7 @@
+# name          url                                                                                   sha256
+# Version-pinned. `scripts/update-appimages.sh` refreshes URLs+hashes from upstream release APIs;
+# a human must review the diff before committing. Never fetched at ISO build time.
+# The placeholder hash 0000... means "not yet pinned by a maintainer" and snormium-app-fetch REFUSES to install it.
+eden            https://github.com/eden-emulator/Releases/releases/latest/download/Eden-Linux-x86_64.AppImage   0000000000000000000000000000000000000000000000000000000000000000
+es-de           https://gitlab.com/es-de/emulationstation-de/-/package_files/latest/download                     0000000000000000000000000000000000000000000000000000000000000000
+steam-rom-manager https://github.com/SteamGridDB/steam-rom-manager/releases/latest/download/Steam-ROM-Manager-x86_64.AppImage 0000000000000000000000000000000000000000000000000000000000000000

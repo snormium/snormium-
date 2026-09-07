@@ -1,0 +1,141 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Emulation guide</h1>
+<p>Snormium ships emulators, <strong>never</strong> games, BIOS files, firmware or keys. You must own the original hardware/games and dump
+them yourself; see each emulator's site for how.</p>
+<h2>Setup</h2>
+<p>Welcome ▸ <strong>Emulation setup</strong> installs the emulators (Flatpak), writes RetroArch defaults, and creates
+<code>~/Games/Emulation/</code> with <code>roms/&lt;system&gt;/</code>, <code>bios/</code>, <code>saves/</code>, <code>states/</code>, <code>screenshots/</code>. Then in RetroArch:
+<em>Main Menu ▸ Online Updater ▸ Core Downloader</em> and install the cores listed in <code>snormium-cores.txt</code> (one per system; see
+the table below).</p>
+<h2>Where files go</h2>
+<table>
+<thead>
+<tr>
+<th>System</th>
+<th>Emulator</th>
+<th>ROM folder</th>
+<th>BIOS / firmware (your own dumps)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Atari 2600/7800/Lynx, NES, SNES, GB/GBC/GBA, N64, Master System, Genesis, 32X, PC Engine</td>
+<td>RetroArch</td>
+<td><code>roms/&lt;system&gt;</code></td>
+<td>GBA: <code>bios/gba_bios.bin</code> (optional); Lynx: <code>bios/lynxboot.img</code></td>
+</tr>
+<tr>
+<td>Sega CD</td>
+<td>RetroArch (Genesis Plus GX)</td>
+<td><code>roms/segacd</code></td>
+<td><code>bios/bios_CD_U.bin</code>, <code>bios_CD_E.bin</code>, <code>bios_CD_J.bin</code></td>
+</tr>
+<tr>
+<td>Saturn</td>
+<td>RetroArch (Beetle Saturn)</td>
+<td><code>roms/saturn</code></td>
+<td><code>bios/sega_101.bin</code>, <code>bios/mpr-17933.bin</code></td>
+</tr>
+<tr>
+<td>Neo Geo / Arcade</td>
+<td>RetroArch (FBNeo)</td>
+<td><code>roms/neogeo</code>, <code>roms/arcade</code></td>
+<td><code>roms/neogeo/neogeo.zip</code> (BIOS ROM set)</td>
+</tr>
+<tr>
+<td>PlayStation</td>
+<td>DuckStation</td>
+<td><code>roms/psx</code></td>
+<td><code>bios/scph5501.bin</code> etc. (point DuckStation at <code>bios/</code>)</td>
+</tr>
+<tr>
+<td>PlayStation 2</td>
+<td>PCSX2</td>
+<td><code>roms/ps2</code></td>
+<td><code>bios/</code> (PCSX2 ▸ Settings ▸ BIOS ▸ folder)</td>
+</tr>
+<tr>
+<td>PlayStation 3</td>
+<td>RPCS3</td>
+<td><code>roms/ps3</code></td>
+<td>PS3 firmware <code>PS3UPDAT.PUP</code> from Sony's site — install via RPCS3 ▸ File ▸ Install Firmware</td>
+</tr>
+<tr>
+<td>PSP</td>
+<td>PPSSPP</td>
+<td><code>roms/psp</code></td>
+<td>none</td>
+</tr>
+<tr>
+<td>Dreamcast</td>
+<td>Flycast</td>
+<td><code>roms/dreamcast</code></td>
+<td><code>bios/dc/dc_boot.bin</code>, <code>dc_flash.bin</code></td>
+</tr>
+<tr>
+<td>GameCube / Wii</td>
+<td>Dolphin</td>
+<td><code>roms/gc</code>, <code>roms/wii</code></td>
+<td>none (optional IPL)</td>
+</tr>
+<tr>
+<td>DS</td>
+<td>melonDS</td>
+<td><code>roms/nds</code></td>
+<td><code>bios/bios7.bin</code>, <code>bios9.bin</code>, <code>firmware.bin</code> (optional; free BIOS built in)</td>
+</tr>
+<tr>
+<td>3DS</td>
+<td>Azahar</td>
+<td><code>roms/3ds</code></td>
+<td>none for decrypted dumps; Azahar ▸ Help for key/dump instructions</td>
+</tr>
+<tr>
+<td>Switch</td>
+<td>Eden</td>
+<td><code>roms/switch</code></td>
+<td><code>prod.keys</code> + firmware <strong>from your own console</strong> into Eden's keys folder (Eden shows the path)</td>
+</tr>
+<tr>
+<td>## Frontend</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>ES-DE</strong> scans the folders above and launches everything from a controller-friendly library (Welcome ▸ Open game library).</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Steam ROM Manager</strong> adds games to Steam with artwork, if you prefer Big Picture. Eden/ES-DE/SRM are AppImages fetched only</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>when a maintainer has pinned their checksum; otherwise the Welcome buttons explain how to install manually.</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>## Graphics</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RetroArch defaults: Vulkan, VSync on, auto frame delay, ozone menu. Shaders: Quick Menu ▸ Shaders (CRT-Royale, crt-geom…).</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Integer scaling: Settings ▸ Video ▸ Scaling. Standalone emulators default to Vulkan where available.</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>

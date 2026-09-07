@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Where do my games go?
+Comment=Folder layout and BIOS placement for legally owned games
+Exec=xdg-open /usr/share/doc/snormium/emulation-guide.html
+Icon=help-contents
+Terminal=false
+Categories=Snormium;

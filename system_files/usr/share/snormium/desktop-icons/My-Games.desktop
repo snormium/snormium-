@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=My Games
+Comment=Where ROMs, BIOS files and saves go
+Exec=xdg-open @HOME@/Games/Emulation
+Icon=folder-games
+Terminal=false
+Categories=Snormium;

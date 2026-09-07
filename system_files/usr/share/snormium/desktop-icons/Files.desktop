@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Files
+Comment=Your documents, downloads and drives
+Exec=dolphin
+Icon=system-file-manager
+Terminal=false
+Categories=Snormium;

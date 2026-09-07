@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=DuckStation
+Comment=PlayStation
+Exec=flatpak run org.duckstation.DuckStation
+Icon=org.duckstation.DuckStation
+Terminal=false
+Categories=Snormium;

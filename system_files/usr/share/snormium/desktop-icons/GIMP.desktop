@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=GIMP
+Comment=Photo editing
+Exec=flatpak run org.gimp.GIMP
+Icon=org.gimp.GIMP
+Terminal=false
+Categories=Snormium;

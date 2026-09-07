@@ -1,0 +1,45 @@
+# tier  app-id                                  note   (core = installed on first boot by snormium-flatpaks.service; full = on demand)
+# --- web & communication ---
+core    org.mozilla.firefox                     # browser (Bazzite does not reliably preinstall it; we own this)
+core    org.mozilla.Thunderbird
+core    com.discordapp.Discord
+# --- productivity & media ---
+core    org.libreoffice.LibreOffice
+core    org.videolan.VLC
+core    org.qbittorrent.qBittorrent
+core    org.filezillaproject.Filezilla         # FTP/SFTP client
+core    org.gnome.World.PikaBackup              # file backups (Recovery Center)
+core    com.github.tchx84.Flatseal              # Flatpak permissions (Privacy)
+# --- creative studio (installed by default per product decision 2026-09-06) ---
+core    org.gimp.GIMP
+core    org.kde.krita
+core    org.inkscape.Inkscape
+core    org.darktable.Darktable                 # RAW photography workflow
+core    com.rawtherapee.RawTherapee             # RAW processing
+core    org.upscayl.Upscayl                     # AI image upscaling (Vulkan; works on AMD/Intel/NVIDIA)
+core    org.blender.Blender
+core    org.kde.kdenlive
+core    com.obsproject.Studio
+core    com.obsproject.Studio.Plugin.OBSVkCapture      # game capture (Vulkan/OpenGL)
+core    com.obsproject.Studio.Plugin.Gstreamer
+core    com.obsproject.Studio.Plugin.GStreamerVaapi    # hardware encode
+core    org.ardour.Ardour
+core    org.audacityteam.Audacity
+# --- gaming platforms & helpers (installed by default) ---
+core    net.davidotek.pupgui2                   # ProtonUp-Qt: Proton-GE / Wine-GE manager
+core    com.heroicgameslauncher.hgl             # Epic Games Store, GOG, Amazon Prime Gaming
+core    net.lutris.Lutris                       # Ubisoft Connect, EA App, Battle.net, Rockstar, itch.io, ...
+core    com.usebottles.bottles                  # any other Windows app/game, per-app Wine prefixes
+core    com.github.Matoking.protontricks        # fixes for stubborn Proton titles
+# --- emulation ---
+core    org.libretro.RetroArch
+core    org.azahar_emu.Azahar
+core    net.pcsx2.PCSX2
+core    net.rpcs3.RPCS3
+core    org.duckstation.DuckStation
+core    net.kuribo64.melonDS
+core    org.flycast.Flycast
+core    org.ppsspp.PPSSPP
+core    org.DolphinEmu.dolphin-emu
+# --- on demand ---
+# (nothing currently; add "full" entries here for opt-in apps)

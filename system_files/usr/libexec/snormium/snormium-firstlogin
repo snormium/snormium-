@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Per-user, once: apply the Snormium global theme + colour scheme so accounts created by the installer get the rice.
+m="$HOME/.config/snormium/rice.done"; [[ -e $m ]] && exit 0
+mkdir -p "$(dirname "$m")"
+plasma-apply-lookandfeel -a org.snormium.desktop >/dev/null 2>&1 || true
+plasma-apply-colorscheme Snormium >/dev/null 2>&1 || true
+# Desktop icons, flat, in rows (Windows-style). Launchers are copied (users may rearrange/delete) and marked executable
+# so Plasma treats them as trusted. Then Folder View is told: small icons, rows, unsorted, and the exact row/column of each.
+desk=$(xdg-user-dir DESKTOP 2>/dev/null || echo "$HOME/Desktop"); mkdir -p "$desk" "$HOME/Games/Emulation"
+SRC=/usr/share/snormium/desktop-icons
+if [[ -d $SRC ]]; then
+  cp -n "$SRC"/*.desktop "$desk/" 2>/dev/null || true
+  sed -i "s|@HOME@|$HOME|g" "$desk"/*.desktop 2>/dev/null || true
+  chmod +x "$desk"/*.desktop 2>/dev/null || true
+  # Build the Folder View "positions" StringList: [numStripes, perStripe, url, stripe, pos, ...]
+  rows=(); while read -r line; do [[ -z $line || $line == \#* ]] && continue; rows+=("$line"); done < "$SRC/layout.rows"
+  per=0; for line in "${rows[@]}"; do set -- $line; (( $# > per )) && per=$#; done
+  js="var positions=[\"${#rows[@]}\",\"$per\""
+  r=0; for line in "${rows[@]}"; do c=0; for f in $line; do js+=",\"file://$desk/$f\",\"$r\",\"$c\""; ((c++)); done; ((r++)); done
+  js+="];var ds=desktops();for(var i=0;i<ds.length;i++){var d=ds[i];d.currentConfigGroup=[\"General\"];d.writeConfig(\"iconSize\",1);d.writeConfig(\"arrangement\",0);d.writeConfig(\"alignment\",0);d.writeConfig(\"sortMode\",0);d.writeConfig(\"positions\",positions);d.reloadConfig();}"
+  # plasmashell may still be starting; wait for its D-Bus name, then apply
+  for _ in $(seq 1 60); do gdbus introspect --session --dest org.kde.plasmashell --object-path /PlasmaShell >/dev/null 2>&1 && break; sleep 1; done
+  gdbus call --session --dest org.kde.plasmashell --object-path /PlasmaShell --method org.kde.PlasmaShell.evaluateScript "$js" >/dev/null 2>&1 || true
+fi
+touch "$m"

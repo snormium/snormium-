@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Heroic — Epic, GOG, Amazon
+Comment=Epic Games Store, GOG, Amazon Prime Gaming
+Exec=flatpak run com.heroicgameslauncher.hgl
+Icon=com.heroicgameslauncher.hgl
+Terminal=false
+Categories=Snormium;

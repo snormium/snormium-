@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=App Store
+Comment=Install more apps (Bazaar)
+Exec=bazaar-daemon %U
+Icon=io.github.kolunmi.Bazaar
+Terminal=false
+Categories=Snormium;

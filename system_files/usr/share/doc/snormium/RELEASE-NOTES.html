@@ -1,0 +1,14 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Snormium 2.0 "Isotope" — release notes (pre-release / source only)</h1>
+<p><strong>Base:</strong> Bazzite (Fedora Atomic, KDE Plasma on Wayland, bootc). Two images: <code>snormium</code> (AMD/Intel) and <code>snormium-nvidia</code>.
+<strong>Status:</strong> image recipe, apps and documentation complete; <strong>image and ISO not yet built or booted</strong> — see STATUS.md.</p>
+<h2>What changed from 1.0 (Linux Mint)</h2>
+<ul>
+<li>Atomic updates with rollback replace Timeshift; Recovery Center = roll back / pin images</li>
+<li>Gamescope, HDR, VRR, Gaming Mode session come from Bazzite; nothing hand-rolled</li>
+<li>firewalld + SELinux replace ufw + AppArmor; Security Center reports both</li>
+<li>Discover + Flathub replace Software Center + apt; LibreOffice, Thunderbird, VLC, qBittorrent ship as Flatpaks</li>
+<li>KDE Plasma replaces Cinnamon; Snormium look-and-feel, SDDM and Plymouth theming; Bazzite/Steam-Deck artwork removed and audited</li>
+</ul>
+<h2>Kept</h2>
+<p>Welcome / Security / Recovery centers, emulation layout and curated cores, controller and USB-audio rules, PipeWire studio profile,
+checksum-pinned AppImages, all guides.</p>

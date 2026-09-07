@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=OBS Studio
+Comment=Recording and streaming
+Exec=flatpak run com.obsproject.Studio
+Icon=com.obsproject.Studio
+Terminal=false
+Categories=Snormium;

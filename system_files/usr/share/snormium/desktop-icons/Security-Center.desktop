@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Security Center
+Comment=Is my computer protected?
+Exec=snormium-security-center
+Icon=snormium-security
+Terminal=false
+Categories=Snormium;

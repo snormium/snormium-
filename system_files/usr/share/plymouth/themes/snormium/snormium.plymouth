@@ -1,0 +1,7 @@
+[Plymouth Theme]
+Name=Snormium
+Description=Snormium boot splash
+ModuleName=script
+[script]
+ImageDir=/usr/share/plymouth/themes/snormium
+ScriptFile=/usr/share/plymouth/themes/snormium/snormium.script

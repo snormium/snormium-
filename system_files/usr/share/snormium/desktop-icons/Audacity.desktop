@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Audacity
+Comment=Audio editing
+Exec=flatpak run org.audacityteam.Audacity
+Icon=org.audacityteam.Audacity
+Terminal=false
+Categories=Snormium;

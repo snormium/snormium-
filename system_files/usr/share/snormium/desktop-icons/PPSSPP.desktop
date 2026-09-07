@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=PPSSPP
+Comment=PlayStation Portable
+Exec=flatpak run org.ppsspp.PPSSPP
+Icon=org.ppsspp.PPSSPP
+Terminal=false
+Categories=Snormium;

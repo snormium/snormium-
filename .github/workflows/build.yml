@@ -1,0 +1,35 @@
+# Builds, audits, pushes and signs the images. ISOs are built with `just build-iso` (see Justfile _bib for the
+# bootc-image-builder workarounds); CI does not produce ISOs.
+name: build-snormium
+on:
+  push: { branches: [main] }
+  schedule: [{ cron: "0 6 * * 1" }]   # weekly rebuild on top of latest Bazzite
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions: { contents: read, packages: write, id-token: write }
+    strategy:
+      matrix:
+        include:
+          - { name: snormium,        base: ghcr.io/ublue-os/bazzite }
+          - { name: snormium-nvidia, base: ghcr.io/ublue-os/bazzite-nvidia-open }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: |
+          set -a; source snormium.env; set +a
+          sudo podman build --build-arg BASE_IMAGE=${{ matrix.base }} --build-arg IMAGE_VARIANT=$IMAGE_VARIANT \
+            --build-arg IMAGE_NAME=${{ matrix.name }} -t ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}:latest .
+      - name: Audit artwork
+        run: sudo podman run --rm ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}:latest bash /usr/libexec/snormium/audit-bazzite-assets.sh /
+      - name: Login + push
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | sudo podman login ghcr.io -u ${{ github.actor }} --password-stdin
+          sudo podman push ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}:latest
+      - name: Sign (cosign keyless)
+        if: github.event_name != 'pull_request'
+        uses: sigstore/cosign-installer@v3
+      - run: cosign sign --yes ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}:latest
+        if: github.event_name != 'pull_request'

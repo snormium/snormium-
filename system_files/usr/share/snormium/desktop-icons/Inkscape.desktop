@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Inkscape
+Comment=Vector graphics
+Exec=flatpak run org.inkscape.Inkscape
+Icon=org.inkscape.Inkscape
+Terminal=false
+Categories=Snormium;

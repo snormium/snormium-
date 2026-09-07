@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="80" viewBox="0 0 260 80">
+  <g transform="translate(6,8) scale(0.25)">
+    <path d="M128 14 L226 70 L226 186 L128 242 L30 186 L30 70 Z" fill="#12101C"/>
+    <path d="M128 14 L226 70 L226 186 L128 242 L30 186 L30 70 Z" fill="none" stroke="#8B5CF6" stroke-width="10" stroke-linejoin="round"/>
+    <ellipse cx="128" cy="128" rx="74" ry="26" transform="rotate(-30 128 128)" fill="none" stroke="#22D3EE" stroke-width="6"/>
+    <circle cx="128" cy="128" r="30" fill="#8B5CF6"/><circle cx="128" cy="128" r="14" fill="#ECEAF6"/>
+  </g>
+  <text x="78" y="52" font-family="sans-serif" font-size="30" font-weight="bold" fill="#ECEAF6">Snormium</text>
+</svg>

@@ -1,0 +1,8 @@
+# bootc-image-builder config for qcow2/raw test images (make run-vm)
+[[customizations.filesystem]]
+mountpoint = "/"
+minsize = "40 GiB"
+[[customizations.user]]
+name = "snormium"
+password = "snormium"
+groups = ["wheel"]

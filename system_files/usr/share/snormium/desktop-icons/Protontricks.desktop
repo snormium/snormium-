@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Protontricks
+Comment=Fixes for stubborn Steam games
+Exec=flatpak run com.github.Matoking.protontricks
+Icon=com.github.Matoking.protontricks
+Terminal=false
+Categories=Snormium;

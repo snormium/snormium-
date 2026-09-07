@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Ardour
+Comment=Music production
+Exec=flatpak run org.ardour.Ardour
+Icon=org.ardour.Ardour
+Terminal=false
+Categories=Snormium;

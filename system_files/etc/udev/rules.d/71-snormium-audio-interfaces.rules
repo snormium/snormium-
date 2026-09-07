@@ -1,0 +1,4 @@
+# USB audio interfaces (Focusrite, Behringer, MOTU, ...) — class-compliant, snd-usb-audio. Only grant
+# user access to the raw USB endpoint so vendor control apps / alsa-scarlett-gui can talk to them.
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1235", MODE="0660", TAG+="uaccess"   # Focusrite
+SUBSYSTEM=="usb", ATTRS{idVendor}=="07fd", MODE="0660", TAG+="uaccess"   # MOTU

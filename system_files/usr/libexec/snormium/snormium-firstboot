@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Runs once as root on first boot. Idempotent. (Flatpaks: see snormium-flatpaks.service.)
+set -Eeuo pipefail
+mkdir -p /var/lib/snormium
+firewall-cmd --set-default-zone=public >/dev/null 2>&1 || true
+systemctl enable --now uupd.timer 2>/dev/null || true
+# Pin the initial deployment so a rollback target always exists even after several updates
+ostree admin pin 0 >/dev/null 2>&1 || true
+touch /var/lib/snormium/firstboot.done

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Steam
+Comment=Steam library; Windows games run through Proton
+Exec=steam %U
+Icon=steam
+Terminal=false
+Categories=Snormium;

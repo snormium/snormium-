@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Flycast
+Comment=Dreamcast
+Exec=flatpak run org.flycast.Flycast
+Icon=org.flycast.Flycast
+Terminal=false
+Categories=Snormium;

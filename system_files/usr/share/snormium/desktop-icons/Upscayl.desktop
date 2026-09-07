@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Upscayl
+Comment=AI image upscaling
+Exec=flatpak run org.upscayl.Upscayl
+Icon=org.upscayl.Upscayl
+Terminal=false
+Categories=Snormium;

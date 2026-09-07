@@ -1,0 +1,147 @@
+#!/usr/bin/env python3
+# Snormium Security Center — one window, one answer: "Is my computer protected?"
+import gi, threading, subprocess, os, sys
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GLib, Gdk
+sys.path.insert(0, "/usr/lib/snormium"); sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import snormium_checks as hc
+
+COLORS = {hc.OK: "#2FBF71", hc.WARN: "#F5B041", hc.BAD: "#E5484D", hc.UNK: "#8E8AA5"}
+ICONS  = {hc.OK: "security-high-symbolic", hc.WARN: "security-medium-symbolic", hc.BAD: "security-low-symbolic", hc.UNK: "dialog-question-symbolic"}
+HELPER = "/usr/libexec/snormium/security-helper"
+
+class SecurityCenter(Gtk.Window):
+    def __init__(self):
+        super().__init__(title="Security Center")
+        self.set_default_size(720, 640); self.set_icon_name("snormium-security")
+        css = Gtk.CssProvider(); css.load_from_data(b"""
+          .banner { padding: 24px; border-radius: 12px; color: white; }
+          .banner-title { font-size: 20pt; font-weight: bold; }
+          .row-title { font-weight: bold; } .row-detail { opacity: 0.8; }
+        """)
+        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        hb = Gtk.HeaderBar(title="Security Center", show_close_button=True); self.set_titlebar(hb)
+        self.refresh_btn = Gtk.Button.new_from_icon_name("view-refresh-symbolic", Gtk.IconSize.BUTTON)
+        self.refresh_btn.connect("clicked", lambda *_: self.refresh()); hb.pack_start(self.refresh_btn)
+        outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12, margin=16); self.add(outer)
+        self.banner = Gtk.Box(spacing=16); self.banner.get_style_context().add_class("banner")
+        self.banner_icon = Gtk.Image.new_from_icon_name("security-medium-symbolic", Gtk.IconSize.DIALOG)
+        self.banner_lbl = Gtk.Label(xalign=0); self.banner_lbl.get_style_context().add_class("banner-title")
+        self.banner.pack_start(self.banner_icon, False, False, 0); self.banner.pack_start(self.banner_lbl, True, True, 0)
+        outer.pack_start(self.banner, False, False, 0)
+        self.stack = Gtk.Stack(); sw = Gtk.StackSwitcher(stack=self.stack, halign=Gtk.Align.CENTER)
+        outer.pack_start(sw, False, False, 0); outer.pack_start(self.stack, True, True, 0)
+        self.simple = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
+        scr = Gtk.ScrolledWindow(); scr.add(self.simple); self.stack.add_titled(scr, "simple", "Overview")
+        self.stack.add_titled(self.build_advanced(), "advanced", "Advanced")
+        self.spinner = Gtk.Spinner(); outer.pack_end(self.spinner, False, False, 0)
+        self.show_all(); self.refresh()
+
+    # ---- simple view ------------------------------------------------------
+    def refresh(self):
+        self.spinner.start(); self.refresh_btn.set_sensitive(False)
+        def work():
+            res = [p() for p in hc.PROBES]
+            GLib.idle_add(self.render, res)
+        threading.Thread(target=work, daemon=True).start()
+
+    def render(self, results):
+        for c in self.simple.get_children(): self.simple.remove(c)
+        st, msg = hc.overall(results)
+        self.banner_lbl.set_text(msg); self.banner_icon.set_from_icon_name(ICONS[st], Gtk.IconSize.DIALOG)
+        p = Gtk.CssProvider(); p.load_from_data(f".banner {{ background: {COLORS[st]}; }}".encode())
+        self.banner.get_style_context().add_provider(p, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+        for state, title, detail in results:
+            row = Gtk.ListBoxRow(); box = Gtk.Box(spacing=12, margin=10)
+            ic = Gtk.Image.new_from_icon_name(ICONS[state], Gtk.IconSize.LARGE_TOOLBAR)
+            ic.override_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(*self._rgb(COLORS[state]), 1))
+            txt = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            t = Gtk.Label(label=title, xalign=0); t.get_style_context().add_class("row-title")
+            d = Gtk.Label(label=detail, xalign=0, wrap=True); d.get_style_context().add_class("row-detail")
+            txt.pack_start(t, False, False, 0); txt.pack_start(d, False, False, 0)
+            box.pack_start(ic, False, False, 0); box.pack_start(txt, True, True, 0)
+            fix = self._fix_button(title, state)
+            if fix: box.pack_end(fix, False, False, 0)
+            row.add(box); self.simple.add(row)
+        self.simple.show_all(); self.spinner.stop(); self.refresh_btn.set_sensitive(True)
+
+    def _fix_button(self, title, state):
+        if state == hc.OK: return None
+        actions = {"Firewall": ("Turn on", ["firewall", "on"]),
+                   "Automatic updates": ("Turn on", ["autoupdate", "on"]),
+                   "Screen lock": ("Turn on", ["screenlock", "on"]),
+                   "Restart needed": ("Restart now", ["reboot"]),
+                   "Restore points": ("Open Recovery Center", ["open", "snormium-recovery-center"]),
+                   "Firmware updates": ("Update now", ["run", "konsole", "--hold", "-e", "pkexec", "fwupdmgr", "update"]),
+                   "Secure Boot": ("Learn more", ["help", "secure-boot"]),
+                   "Disk encryption": ("Learn more", ["help", "encryption"])}
+        if title not in actions: return None
+        label, cmd = actions[title]
+        b = Gtk.Button(label=label); b.connect("clicked", lambda *_: self.action(cmd)); return b
+
+    def action(self, cmd):
+        try:
+            self._action(cmd)
+        except OSError as e:
+            d = Gtk.MessageDialog(transient_for=self, modal=True, buttons=Gtk.ButtonsType.OK, message_type=Gtk.MessageType.ERROR,
+                                  text="That tool isn't installed on this computer.", secondary_text=str(e)); d.run(); d.destroy()
+
+    def _action(self, cmd):
+        if cmd[0] == "open":
+            subprocess.Popen([cmd[1]]); return
+        if cmd[0] == "run":
+            subprocess.Popen(cmd[1:]); return
+        if cmd[0] == "help":
+            subprocess.Popen(["xdg-open", f"/usr/share/doc/snormium/security-guide.html#{cmd[1]}"]); return
+        if cmd[0] == "reboot":
+            subprocess.Popen(["systemctl", "reboot"]); return
+        subprocess.run(["pkexec", HELPER] + cmd)
+        self.refresh()
+
+    def _rgb(self, hexs): return tuple(int(hexs[i:i+2], 16)/255 for i in (1, 3, 5))
+
+    # ---- advanced view ----------------------------------------------------
+    def build_advanced(self):
+        g = Gtk.Grid(row_spacing=10, column_spacing=12, margin=12)
+        rows = [
+            ("Screen lock",        "kconfig", "kscreenlockerrc Daemon Autolock"),
+            ("Firewall (firewalld)","helper", "firewall"),
+            ("Automatic updates",  "helper", "autoupdate"),
+            ("Steam Remote Play through firewall", "helper", "fw-service steam-streaming"),
+            ("KDE Connect through firewall",       "helper", "fw-service kdeconnect"),
+            ("USB device guard (blocks new USB devices while locked; advanced)", "helper", "usbguard"),
+        ]
+        for i, (label, kind, key) in enumerate(rows):
+            g.attach(Gtk.Label(label=label, xalign=0, hexpand=True), 0, i, 1, 1)
+            sw = Gtk.Switch(); sw.set_active(self._read_state(kind, key))
+            sw.connect("state-set", self._on_switch, kind, key); g.attach(sw, 1, i, 1, 1)
+        i = len(rows)
+        for j, (name, exe) in enumerate([("Firewall settings", "systemsettings kcm_firewall"), ("Passwords & keys", "kwalletmanager5"),
+                                          ("Flatpak permissions (Flatseal)", "flatpak run com.github.tchx84.Flatseal"),
+                                          ("System images & rollback", "snormium-recovery-center"), ("Updates (ujust update)", "konsole --hold -e ujust update")]):
+            b = Gtk.Button(label=name); b.connect("clicked", lambda _b, e=exe: subprocess.Popen(e.split()))
+            g.attach(b, 0, i + j, 2, 1)
+        return g
+
+    def _read_state(self, kind, key):
+        try:
+            if kind == "kconfig":
+                f, g, k = key.split(); r = subprocess.run(["kreadconfig6", "--file", f, "--group", g, "--key", k, "--default", "true"], capture_output=True, text=True); return r.stdout.strip() == "true"
+            r = subprocess.run([HELPER, "status", key], capture_output=True, text=True); return r.stdout.strip() == "on"
+        except OSError:
+            return False
+
+    def _on_switch(self, sw, state, kind, key):
+        try:
+            if kind == "kconfig":
+                f, g, k = key.split(); subprocess.run(["kwriteconfig6", "--file", f, "--group", g, "--key", k, "--type", "bool", "true" if state else "false"]); return False
+            parts = key.split(" ", 1)
+            subprocess.run(["pkexec", HELPER] + parts + ["on" if state else "off"])
+        except OSError:
+            pass
+        sw.set_active(self._read_state(kind, key)); return True
+
+if __name__ == "__main__":
+    if "--check" in sys.argv:
+        os.execvp("python3", ["python3", os.path.join(os.path.dirname(os.path.abspath(__file__)), "snormium_checks.py")])
+    SecurityCenter().connect("destroy", Gtk.main_quit); Gtk.main()

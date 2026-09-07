@@ -1,0 +1,7 @@
+// Let members of the sudo group run Snormium helper actions with the normal password prompt.
+// (No password-less exceptions: consumer UAC-like behaviour, prompt only when something changes.)
+polkit.addRule(function(action, subject) {
+  if (action.id.indexOf("org.snormium.") === 0 && subject.isInGroup("sudo")) {
+    return polkit.Result.AUTH_ADMIN_KEEP;
+  }
+});

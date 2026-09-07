@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# Snormium Recovery Center — Fedora Atomic edition. Every update keeps the previous system image; recovery = roll back.
+import gi, subprocess, json
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+HELPER = "/usr/libexec/snormium/recovery-helper"
+
+def deployments():
+    try:
+        out = subprocess.run(["rpm-ostree", "status", "--json"], capture_output=True, text=True, timeout=20).stdout
+        return json.loads(out)["deployments"]
+    except (OSError, ValueError, KeyError, subprocess.TimeoutExpired): return []
+
+class Recovery(Gtk.Window):
+    def __init__(self):
+        super().__init__(title="Recovery Center"); self.set_default_size(700, 560); self.set_icon_name("snormium-recovery")
+        hb = Gtk.HeaderBar(title="Recovery Center", show_close_button=True); self.set_titlebar(hb)
+        v = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10, margin=16); self.add(v)
+        v.pack_start(Gtk.Label(xalign=0, wrap=True, label="Snormium keeps your previous system image after every update, so undoing a bad update is one click. These actions never touch your personal files; back those up with Backups."), False, False, 0)
+        def card(title, desc, btn, cb):
+            f = Gtk.Frame(); b = Gtk.Box(spacing=12, margin=12); f.add(b); tb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            t = Gtk.Label(xalign=0); t.set_markup(f"<b>{title}</b>"); tb.pack_start(t, False, False, 0)
+            tb.pack_start(Gtk.Label(label=desc, xalign=0, wrap=True), False, False, 0); b.pack_start(tb, True, True, 0)
+            bt = Gtk.Button(label=btn); bt.connect("clicked", cb); b.pack_end(bt, False, False, 0); v.pack_start(f, False, False, 0)
+        deps = deployments(); prev = deps[1] if len(deps) > 1 else None
+        card("Undo the last update", f"Make the previous system image ({prev.get('version', '?') if prev else 'none yet'}) the default and restart into it. Apps from Discover stay.",
+             "Roll back", lambda *_: self.run_helper(["rollback"], "The previous system image is now the default. Restart to use it."))
+        card("Keep this system image", "Pin the current image so it is never cleaned up — a permanent restore point.",
+             "Pin current image", lambda *_: self.run_helper(["pin"], "Current image pinned."))
+        card("Back up my files", "Copy Documents, Pictures, game saves and settings to an external drive (Pika Backup).",
+             "Open Backups", lambda *_: self.launch(["flatpak", "run", "org.gnome.World.PikaBackup"]))
+        card("Fix a broken update", "Clears a stuck or half-applied update and fetches a fresh one.",
+             "Repair updates", lambda *_: self.run_helper(["repair-updates"], "Update repair finished. Check Discover for the result."))
+        card("Boot repair & rescue", "Can't start Snormium at all? At the boot menu pick the older entry; or boot the install USB and read the Recovery Guide.",
+             "Open Recovery Guide", lambda *_: self.launch(["xdg-open", "/usr/share/doc/snormium/recovery-guide.html"]))
+        self.show_all()
+    def launch(self, cmd):
+        try: subprocess.Popen(cmd)
+        except OSError: pass
+    def run_helper(self, args, done_msg):
+        try: r = subprocess.run(["pkexec", HELPER] + args, capture_output=True, text=True)
+        except OSError as e: r = subprocess.CompletedProcess(args, 1, "", str(e))
+        d = Gtk.MessageDialog(transient_for=self, modal=True, buttons=Gtk.ButtonsType.OK,
+                              message_type=Gtk.MessageType.INFO if r.returncode == 0 else Gtk.MessageType.ERROR,
+                              text=done_msg if r.returncode == 0 else "That didn't work. Your computer has not been changed.")
+        if r.returncode != 0:
+            exp = Gtk.Expander(label="Advanced details"); tv = Gtk.TextView(editable=False); tv.get_buffer().set_text(r.stderr or r.stdout)
+            exp.add(tv); d.get_content_area().pack_end(exp, True, True, 0); exp.show_all()
+        d.run(); d.destroy()
+Recovery().connect("destroy", Gtk.main_quit); Gtk.main()

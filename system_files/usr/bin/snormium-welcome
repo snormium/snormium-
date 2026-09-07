@@ -1,0 +1,109 @@
+#!/usr/bin/env python3
+# Snormium Welcome Center — first-login hub. Every button launches an existing graphical tool.
+import gi, subprocess, os, json
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, Gdk, GLib
+import threading
+CFG = os.path.expanduser("~/.config/snormium/welcome.json")
+FLATPAK = ["flatpak", "run"]
+
+SECTIONS = [
+  ("Get started", [
+    ("Update your computer", "Install today's fixes (system and apps); restart whenever you like", "system-software-update", ["ujust", "update"]),
+    ("Security Center", "See whether your computer is protected", "snormium-security", ["snormium-security-center"]),
+    ("Recovery Center", "Restore points and rollback: undo any bad update", "snormium-recovery", ["snormium-recovery-center"]),
+    ("Graphics drivers", "AMD/Intel are built in. NVIDIA: use the Snormium NVIDIA image (see guide)", "video-display", ["xdg-open", "/usr/share/doc/snormium/driver-guide.html"]),
+  ]),
+  ("Play", [
+    ("Steam", "Sign in and play; Proton is ready", "steam", ["steam"]),
+    ("Set up Proton-GE / Wine-GE", "Extra compatibility layers (ProtonUp-Qt)", "net.davidotek.pupgui2", FLATPAK+["net.davidotek.pupgui2"]),
+    ("Heroic — Epic, GOG, Amazon", "Sign in to your stores and install games; Proton-GE handled automatically", "com.heroicgameslauncher.hgl", FLATPAK+["com.heroicgameslauncher.hgl"]),
+    ("Lutris — Ubisoft, EA, Battle.net", "Search the store name in Lutris and follow its one-click install script", "net.lutris.Lutris", FLATPAK+["net.lutris.Lutris"]),
+    ("Controllers", "Game controller settings", "input-gaming", ["systemsettings", "kcm_gamecontroller"]),
+    ("HDR, VRR and refresh rate", "Display settings (Wayland); HDR needs a supported monitor", "preferences-desktop-display", ["systemsettings", "kcm_kscreen"]),
+  ]),
+  ("Emulate", [
+    ("Emulation setup", "Create game folders, RetroArch defaults and the ES-DE library frontend", "snormium-emulation", ["ujust", "snormium-emulation"]),
+    ("Where do my games go?", "Folder layout and BIOS/firmware placement for legally owned games", "help-contents", ["xdg-open", "/usr/share/doc/snormium/emulation-guide.html"]),
+      ]),
+  ("Create & work", [
+    ("Creative Studio", "GIMP, Krita, Inkscape, Darktable, RawTherapee, Upscayl, Blender, Kdenlive, OBS, Ardour, Audacity — installed; click to check for updates", "applications-graphics", ["ujust", "snormium-creative"]),
+    ("DaVinci Resolve", "Professional editing and colour grading. Download the Linux installer from Blackmagic first, then click to set it up", "video-x-generic", ["ujust", "install-resolve"]),
+    ("Studio audio mode", "Low-latency PipeWire profile for USB audio interfaces", "audio-card", ["ujust", "snormium-audio-studio"]),
+    ("App Store", "Install anything else (Bazaar, Flathub)", "io.github.kolunmi.Bazaar", ["bazaar-daemon"]),
+  ]),
+  ("Make it yours", [
+    ("Appearance", "Themes, wallpapers, fonts", "preferences-desktop-theme", ["systemsettings", "kcm_lookandfeel"]),
+    ("Accessibility", "Screen reader, magnifier, large text, keyboard help", "preferences-desktop-accessibility", ["systemsettings", "kcm_access"]),
+    ("Privacy", "App permissions (Flatseal), camera, microphone, location", "preferences-system-privacy", FLATPAK+["com.github.tchx84.Flatseal"]),
+    ("Documentation", "Guides for everything above", "help-browser", ["xdg-open", "/usr/share/doc/snormium/index.html"]),
+  ]),
+]
+
+class Welcome(Gtk.Window):
+    def __init__(self):
+        super().__init__(title="Welcome to Snormium"); self.set_default_size(860, 640); self.set_icon_name("snormium-logo")
+        css = Gtk.CssProvider(); css.load_from_data(b"""
+          .hero { background: #221F35; color: #ECEAF6; padding: 28px; border-radius: 12px; }
+          .hero-title { font-size: 22pt; font-weight: bold; } .section { font-size: 13pt; font-weight: bold; margin-top: 10px; }
+          .tile { padding: 10px; border-radius: 8px; } .tile-sub { opacity: 0.75; font-size: 9.5pt; }""")
+        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        hb = Gtk.HeaderBar(title="Welcome", show_close_button=True); self.set_titlebar(hb)
+        scr = Gtk.ScrolledWindow(); self.add(scr)
+        v = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8, margin=16); scr.add(v)
+        hero = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6); hero.get_style_context().add_class("hero")
+        t = Gtk.Label(label="Welcome to Snormium", xalign=0); t.get_style_context().add_class("hero-title")
+        s = Gtk.Label(label="Your computer should work for you. Everything below is optional — start with Update and Drivers.", xalign=0, wrap=True)
+        hero.pack_start(t, False, False, 0); hero.pack_start(s, False, False, 0); v.pack_start(hero, False, False, 0)
+        for name, tiles in SECTIONS:
+            l = Gtk.Label(label=name, xalign=0); l.get_style_context().add_class("section"); v.pack_start(l, False, False, 0)
+            fb = Gtk.FlowBox(max_children_per_line=2, min_children_per_line=1, selection_mode=Gtk.SelectionMode.NONE, homogeneous=True)
+            for title, sub, icon, cmd in tiles: fb.add(self.tile(title, sub, icon, cmd))
+            v.pack_start(fb, False, False, 0)
+        self.status = Gtk.Label(xalign=0); self.status.get_style_context().add_class("tile-sub")
+        v.pack_start(self.status, False, False, 4); self._apps_done = False; self.poll_apps(); GLib.timeout_add_seconds(20, self.poll_apps)
+        chk = Gtk.CheckButton(label="Show this window at every login"); chk.set_active(self.autostart()); chk.connect("toggled", self.set_autostart)
+        v.pack_end(chk, False, False, 8); self.show_all()
+    def tile(self, title, sub, icon, cmd):
+        b = Gtk.Button(); b.get_style_context().add_class("tile"); b.set_relief(Gtk.ReliefStyle.NONE)
+        h = Gtk.Box(spacing=12); h.pack_start(Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.DND), False, False, 0)
+        tb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        tb.pack_start(Gtk.Label(label=title, xalign=0), False, False, 0)
+        sl = Gtk.Label(label=sub, xalign=0, wrap=True); sl.get_style_context().add_class("tile-sub"); tb.pack_start(sl, False, False, 0)
+        h.pack_start(tb, True, True, 0); b.add(h)
+        b.connect("clicked", lambda *_: self.launch(cmd)); return b
+    def launch(self, cmd):
+        try:
+            if cmd[0] == "ujust": cmd = ["konsole", "--hold", "-e"] + cmd
+            subprocess.Popen(cmd)
+        except OSError:
+            d = Gtk.MessageDialog(transient_for=self, modal=True, buttons=Gtk.ButtonsType.OK, message_type=Gtk.MessageType.INFO,
+                                  text="This feature isn't installed yet.", secondary_text=f"Open Software Center and search for: {cmd[0]}"); d.run(); d.destroy()
+    def poll_apps(self):
+        def work():
+            try:
+                want = [l.split()[1] for l in open("/usr/share/snormium/flatpak.list") if not l.startswith("#") and l.split() and l.split()[0] == "core"]
+                have = subprocess.run(["flatpak", "list", "--system", "--app", "--columns=application"], capture_output=True, text=True).stdout.split()
+                n = sum(1 for a in want if a in have); GLib.idle_add(self.show_apps, n, len(want))
+            except Exception: GLib.idle_add(self.status.set_text, "")
+        threading.Thread(target=work, daemon=True).start(); return True
+    def show_apps(self, n, total):
+        if n < total: self.status.set_text(f"Setting up your apps in the background: {n} of {total} installed. Games and emulators appear in the menu as they arrive.")
+        else:
+            self.status.set_text("All bundled apps are installed.")
+            if not self._apps_done:
+                self._apps_done = True
+                try: subprocess.Popen(["notify-send", "-a", "Snormium", "-i", "snormium-logo", "Your apps are ready", "LibreOffice, Discord, Steam tools and the emulators are installed."])
+                except OSError: pass
+    def autostart(self):
+        try: return json.load(open(CFG)).get("autostart", True)
+        except (OSError, ValueError): return True
+    def set_autostart(self, chk):
+        os.makedirs(os.path.dirname(CFG), exist_ok=True); json.dump({"autostart": chk.get_active()}, open(CFG, "w"))
+if __name__ == "__main__":
+    import sys
+    if "--autostart" in sys.argv:
+        try:
+            if not json.load(open(CFG)).get("autostart", True): sys.exit(0)
+        except (OSError, ValueError): pass
+    Welcome().connect("destroy", Gtk.main_quit); Gtk.main()

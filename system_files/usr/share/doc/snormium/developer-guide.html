@@ -1,0 +1,28 @@
+<!doctype html><meta charset=utf-8><title>Snormium</title><style>body{font-family:sans-serif;max-width:860px;margin:2em auto;padding:0 1em;line-height:1.5;color:#ECEAF6;background:#12101C}h1{color:#8B5CF6;border-bottom:3px solid #22D3EE}table{border-collapse:collapse}td,th{border:1px solid #221F35;padding:4px 8px}code{background:#221F35}a{color:#22D3EE}</style><h1>Developer / build guide</h1>
+<h2>Build host</h2>
+<p>Linux Mint 22.x or Ubuntu 24.04, 25 GB free, root. <code>sudo apt install squashfs-tools xorriso isolinux rsync gpg
+python3-pil librsvg2-bin ovmf qemu-system-x86 shellcheck desktop-file-utils</code>.</p>
+<h2>Build</h2>
+<pre><code>git clone &lt;repo&gt; snormium-os &amp;&amp; cd snormium-os
+make lint          # static checks, runs anywhere
+sudo make          # 00 host check → 01 fetch+verify Mint ISO → 02 extract → 03 apply → 04 ISO → 05 validate → 06 release
+make vm-test       # QEMU UEFI boot;  testing/vm-test.sh --bios ;  --install adds a test disk
+</code></pre>
+<p>Re-run a single stage: <code>sudo scripts/03-apply-chroot.sh security</code> (stages: packages security gaming emulation desktop branding debrand cleanup).
+Everything is driven by <code>build.conf</code>; override with env vars (<code>MINT_VERSION=22.3 sudo make</code>).</p>
+<h2>Layout</h2>
+<p><code>packages/</code> manifests · <code>configs/</code> dropped into the chroot verbatim (path documented at top of each) · <code>security/ desktop/
+recovery/ applications/ emulation/</code> our apps (Python 3 + GTK 3, bash helpers behind polkit) · <code>branding/</code> generated
+theme/wallpapers/plymouth · <code>installer/</code> Ubiquity notes · <code>testing/</code> lint, VM harness, checklist, hardware matrix.</p>
+<h2>Principles</h2>
+<p>Never edit an upstream file in place when a drop-in directory exists (<code>*.d/</code>). Every privileged action is a fixed
+sub-command of a helper behind a polkit action. New third-party sources need a row in <code>packages/sources/THIRD-PARTY.md</code>.
+Update AppImage pins with <code>scripts/update-appimages.sh</code> (to be written; see STATUS.md) and review the diff.</p>
+<h2>Testing</h2>
+<p><code>testing/CHECKLIST.md</code> is the release gate; results go in <code>testing/HARDWARE-MATRIX.md</code>. Nothing is claimed working
+without a row there.</p>
+<h2>Debranding</h2>
+<p>Stage <code>debrand</code> purges <code>packages/debrand-purge.list</code> <strong>after</strong> <code>branding</code> generated Snormium-Dark/Light from Mint-Y, scrubs
+leftover paths, patches the Cinnamon menu icon default and Ubiquity's desktop entry, installs our slideshow, then runs
+<code>testing/audit-mint-assets.sh</code> and aborts the build if anything Mint-branded remains. If purging a package fails because
+a Mint metapackage hard-depends on it, create an <code>equivs</code> dummy providing that name (add to <code>packages/</code>) so apt stays consistent.</p>

@@ -1,0 +1,9 @@
+build/work/
+build/out/
+build/cache/
+__pycache__/
+*.pyc
+output/
+_bib.*
+_bibkeys.*
+__pycache__/
