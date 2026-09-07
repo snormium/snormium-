@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions: { contents: read, packages: write, id-token: write }
     strategy:
+      fail-fast: false                 # one variant failing must not cancel the other
       matrix:
         include:
           - { name: snormium,        base: ghcr.io/ublue-os/bazzite }
@@ -24,12 +25,19 @@ jobs:
       - name: Audit artwork
         run: sudo podman run --rm ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}:latest bash /usr/libexec/snormium/audit-bazzite-assets.sh /
       - name: Login + push
+        id: push
         if: github.event_name != 'pull_request'
         run: |
+          IMAGE=ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}
           echo "${{ secrets.GITHUB_TOKEN }}" | sudo podman login ghcr.io -u ${{ github.actor }} --password-stdin
-          sudo podman push ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}:latest
+          # cosign runs unprivileged and reads ~/.docker/config.json, so the root podman login above is
+          # invisible to it; without this the signature push fails UNAUTHORIZED.
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          sudo podman push --digestfile=digest.txt "$IMAGE:latest"
+          echo "digest=$(cat digest.txt)" >> "$GITHUB_OUTPUT"
       - name: Sign (cosign keyless)
         if: github.event_name != 'pull_request'
         uses: sigstore/cosign-installer@v3
-      - run: cosign sign --yes ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}:latest
+      # sign by digest, not tag: :latest can move between push and sign
+      - run: cosign sign --yes ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}@${{ steps.push.outputs.digest }}
         if: github.event_name != 'pull_request'
